@@ -1,1 +1,409 @@
-https://sagggggese.my.canva.site/sagesse-personalizing-mental-health-support-with-kei-app
+import React, { useState, useEffect } from 'react';
+import { Brain, Users, MessageCircle, BarChart3, Settings, Home, TrendingUp, Heart, Shield, Zap, Target, Award, CheckCircle, AlertCircle, User, Calendar, Clock, Star } from 'lucide-react';
+
+const KeiAssistance = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [userProfile, setUserProfile] = useState({
+    name: 'Sarah Johnson',
+    role: 'Product Manager',
+    mentalHealthScore: 72,
+    communicationStyle: 'Collaborative',
+    stressLevel: 'Moderate',
+    wellnessStreak: 7
+  });
+  
+  const [mentalHealthData, setMentalHealthData] = useState({
+    mood: 7,
+    stress: 4,
+    energy: 6,
+    focus: 8,
+    sleep: 7
+  });
+
+  const [teamDynamics, setTeamDynamics] = useState({
+    collaboration: 85,
+    communication: 78,
+    trust: 92,
+    productivity: 88
+  });
+
+  const [notifications, setNotifications] = useState([
+    { id: 1, type: 'success', message: 'Great job completing your mindfulness session!', time: '10m ago' },
+    { id: 2, type: 'info', message: 'Team check-in scheduled for 2:00 PM', time: '1h ago' },
+    { id: 3, type: 'warning', message: 'Stress levels elevated - consider a break', time: '2h ago' }
+  ]);
+
+  const personalizedTips = [
+    {
+      category: 'Stress Management',
+      tip: 'Based on your communication style, try collaborative problem-solving with your team when facing challenges.',
+      icon: <Shield className="w-5 h-5" />
+    },
+    {
+      category: 'Productivity',
+      tip: 'Your focus peaks in the morning. Schedule important tasks between 9-11 AM.',
+      icon: <Target className="w-5 h-5" />
+    },
+    {
+      category: 'Team Dynamics',
+      tip: 'Your team responds well to your collaborative approach. Continue fostering open communication.',
+      icon: <Users className="w-5 h-5" />
+    }
+  ];
+
+  const TabButton = ({ id, icon, label, isActive, onClick }) => (
+    <button
+      onClick={() => onClick(id)}
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+        isActive
+          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+      }`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+    </button>
+  );
+
+  const MetricCard = ({ title, value, unit, change, color, icon }) => (
+    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-200">
+      <div className="flex items-center justify-between mb-4">
+        <div className={`p-3 rounded-lg ${color}`}>
+          {icon}
+        </div>
+        <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+          change > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {change > 0 ? '+' : ''}{change}%
+        </div>
+      </div>
+      <h3 className="text-2xl font-bold text-gray-900 mb-1">{value}{unit}</h3>
+      <p className="text-gray-600 text-sm">{title}</p>
+    </div>
+  );
+
+  const ProgressBar = ({ label, value, color, maxValue = 100 }) => (
+    <div className="mb-4">
+      <div className="flex justify-between text-sm mb-2">
+        <span className="font-medium text-gray-700">{label}</span>
+        <span className="text-gray-600">{value}/{maxValue}</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-3">
+        <div
+          className={`h-3 rounded-full transition-all duration-500 ${color}`}
+          style={{ width: `${(value / maxValue) * 100}%` }}
+        />
+      </div>
+    </div>
+  );
+
+  const renderDashboard = () => (
+    <div className="space-y-6">
+      {/* Welcome Section */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 text-white">
+        <h2 className="text-2xl font-bold mb-2">Welcome back, {userProfile.name}!</h2>
+        <p className="opacity-90">Your mental wellness journey continues. Here's how you're doing today.</p>
+        <div className="mt-4 flex items-center gap-4">
+          <div className="bg-white bg-opacity-20 rounded-lg p-3">
+            <Award className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-sm opacity-90">Wellness Streak</p>
+            <p className="text-xl font-bold">{userProfile.wellnessStreak} days</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <MetricCard
+          title="Mental Health Score"
+          value={userProfile.mentalHealthScore}
+          unit="/100"
+          change={5}
+          color="bg-blue-100 text-blue-600"
+          icon={<Brain className="w-6 h-6" />}
+        />
+        <MetricCard
+          title="Team Collaboration"
+          value={teamDynamics.collaboration}
+          unit="%"
+          change={3}
+          color="bg-green-100 text-green-600"
+          icon={<Users className="w-6 h-6" />}
+        />
+        <MetricCard
+          title="Stress Level"
+          value="Moderate"
+          unit=""
+          change={-2}
+          color="bg-orange-100 text-orange-600"
+          icon={<TrendingUp className="w-6 h-6" />}
+        />
+        <MetricCard
+          title="Focus Score"
+          value={mentalHealthData.focus}
+          unit="/10"
+          change={1}
+          color="bg-purple-100 text-purple-600"
+          icon={<Target className="w-6 h-6" />}
+        />
+      </div>
+
+      {/* Personalized Tips */}
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Personalized Recommendations</h3>
+        <div className="space-y-4">
+          {personalizedTips.map((tip, index) => (
+            <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">
+                {tip.icon}
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900">{tip.category}</h4>
+                <p className="text-gray-600 text-sm mt-1">{tip.tip}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h3>
+        <div className="space-y-3">
+          {notifications.map((notification) => (
+            <div key={notification.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <div className={`p-2 rounded-full ${
+                notification.type === 'success' ? 'bg-green-100 text-green-600' :
+                notification.type === 'warning' ? 'bg-yellow-100 text-yellow-600' :
+                'bg-blue-100 text-blue-600'
+              }`}>
+                {notification.type === 'success' ? <CheckCircle className="w-4 h-4" /> :
+                 notification.type === 'warning' ? <AlertCircle className="w-4 h-4" /> :
+                 <Clock className="w-4 h-4" />}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-gray-900">{notification.message}</p>
+                <p className="text-xs text-gray-500">{notification.time}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderMentalHealthTracking = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Mental Health Metrics</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <ProgressBar label="Mood" value={mentalHealthData.mood} color="bg-gradient-to-r from-green-400 to-green-600" maxValue={10} />
+            <ProgressBar label="Stress Level" value={mentalHealthData.stress} color="bg-gradient-to-r from-red-400 to-red-600" maxValue={10} />
+            <ProgressBar label="Energy" value={mentalHealthData.energy} color="bg-gradient-to-r from-yellow-400 to-yellow-600" maxValue={10} />
+          </div>
+          <div>
+            <ProgressBar label="Focus" value={mentalHealthData.focus} color="bg-gradient-to-r from-purple-400 to-purple-600" maxValue={10} />
+            <ProgressBar label="Sleep Quality" value={mentalHealthData.sleep} color="bg-gradient-to-r from-blue-400 to-blue-600" maxValue={10} />
+          </div>
+        </div>
+      </div>
+
+      {/* Daily Check-in */}
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Daily Check-in</h3>
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <span className="text-lg">How are you feeling today?</span>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <button
+                  key={rating}
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  onClick={() => setMentalHealthData(prev => ({ ...prev, mood: rating * 2 }))}
+                >
+                  <Star className={`w-6 h-6 ${rating * 2 <= mentalHealthData.mood ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                </button>
+              ))}
+            </div>
+          </div>
+          <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all duration-200">
+            Submit Check-in
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderTeamDynamics = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Team Dynamics Analysis</h3>
+        <div className="space-y-4">
+          <ProgressBar label="Collaboration" value={teamDynamics.collaboration} color="bg-gradient-to-r from-green-400 to-green-600" />
+          <ProgressBar label="Communication" value={teamDynamics.communication} color="bg-gradient-to-r from-blue-400 to-blue-600" />
+          <ProgressBar label="Trust" value={teamDynamics.trust} color="bg-gradient-to-r from-purple-400 to-purple-600" />
+          <ProgressBar label="Productivity" value={teamDynamics.productivity} color="bg-gradient-to-r from-orange-400 to-orange-600" />
+        </div>
+      </div>
+
+      {/* Team Insights */}
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Team Insights</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gradient-to-r from-green-100 to-green-200 p-4 rounded-lg">
+            <h4 className="font-semibold text-green-800 mb-2">Strong Areas</h4>
+            <p className="text-green-700 text-sm">High trust levels and excellent collaboration patterns detected.</p>
+          </div>
+          <div className="bg-gradient-to-r from-yellow-100 to-yellow-200 p-4 rounded-lg">
+            <h4 className="font-semibold text-yellow-800 mb-2">Areas for Improvement</h4>
+            <p className="text-yellow-700 text-sm">Communication frequency could be increased during project phases.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderCommunicationStyle = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Communication Style Assessment</h3>
+        <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-lg mb-6">
+          <div className="flex items-center gap-4">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-3 rounded-lg">
+              <MessageCircle className="w-6 h-6" />
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold text-gray-900">Your Communication Style</h4>
+              <p className="text-purple-700 font-medium">{userProfile.communicationStyle}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="border-l-4 border-purple-500 pl-4">
+            <h4 className="font-semibold text-gray-900">Strengths</h4>
+            <ul className="text-gray-600 text-sm mt-2 space-y-1">
+              <li>• Excellent at building consensus</li>
+              <li>• Strong active listening skills</li>
+              <li>• Effective at conflict resolution</li>
+            </ul>
+          </div>
+          <div className="border-l-4 border-pink-500 pl-4">
+            <h4 className="font-semibold text-gray-900">Development Areas</h4>
+            <ul className="text-gray-600 text-sm mt-2 space-y-1">
+              <li>• Practice assertive communication in meetings</li>
+              <li>• Set clearer boundaries with deadlines</li>
+              <li>• Develop more direct feedback delivery</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Communication Tips */}
+      <div className="bg-white rounded-xl p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Personalized Communication Tips</h3>
+        <div className="space-y-3">
+          {[
+            "When leading meetings, start with a clear agenda to leverage your collaborative nature",
+            "Use your listening skills to identify team concerns before they escalate",
+            "Practice saying 'no' politely but firmly to maintain healthy boundaries"
+          ].map((tip, index) => (
+            <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+              <Zap className="w-5 h-5 text-purple-600 mt-0.5" />
+              <p className="text-gray-700 text-sm">{tip}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return renderDashboard();
+      case 'tracking':
+        return renderMentalHealthTracking();
+      case 'team':
+        return renderTeamDynamics();
+      case 'communication':
+        return renderCommunicationStyle();
+      default:
+        return renderDashboard();
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">
+                <Brain className="w-8 h-8" />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Kei Assistance
+              </h1>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-sm font-medium text-gray-700">{userProfile.name}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar */}
+          <div className="lg:w-64 space-y-2">
+            <TabButton
+              id="dashboard"
+              icon={<Home className="w-5 h-5" />}
+              label="Dashboard"
+              isActive={activeTab === 'dashboard'}
+              onClick={setActiveTab}
+            />
+            <TabButton
+              id="tracking"
+              icon={<BarChart3 className="w-5 h-5" />}
+              label="Mental Health Tracking"
+              isActive={activeTab === 'tracking'}
+              onClick={setActiveTab}
+            />
+            <TabButton
+              id="team"
+              icon={<Users className="w-5 h-5" />}
+              label="Team Dynamics"
+              isActive={activeTab === 'team'}
+              onClick={setActiveTab}
+            />
+            <TabButton
+              id="communication"
+              icon={<MessageCircle className="w-5 h-5" />}
+              label="Communication Style"
+              isActive={activeTab === 'communication'}
+              onClick={setActiveTab}
+            />
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1">
+            {renderContent()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default KeiAssistance;
